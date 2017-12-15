@@ -1,8 +1,7 @@
 // Author: Jordan Bergero
 
-var requestURL = 'http://gdx.mlb.com/components/game/mlb/year_2016/month_05/day20/master_scoreboard.json';
+var requestURL = 'http://gdx.mlb.com/components/game/mlb/year_2016/month_05/day_20/master_scoreboard.json';
 var globalJSON;
-var carouselAnimating = false;
 $(document).ready(function() {
     $.getJSON(requestURL, function (data) {
         populateHeader(data);
@@ -13,21 +12,16 @@ $(document).ready(function() {
         drawError(err);
         });
 
-
     $( "body" ).keydown(function(e) {
         var direction;
         if(e.keyCode == "39"){
             direction = "next";
-            //alert(direction);
         }
         else if (e.keyCode=="37") {
             direction ="prev";
         }
 
-        if (carouselAnimating === false) {
-            carouselAnimating = true;
-            moveSlides(direction, globalJSON);
-        }
+        moveSlides(direction, globalJSON);
 
     });
 
@@ -108,96 +102,60 @@ function setBackgroundAndOrder(i,games){
 
 
 
-
-
 // Carousel moves all slides left or right by one slide
 function moveSlides(dir, gameObject) {
     var games = gameObject.data.games.game;
     var size = games.length - 1;
-    var selectedGameItem;
-    //console.log("size" + size);
-    //TODO find the selected order number, and removed the css from the selected element
-
-    var slides = $('.slide');
-    var select = $('.selected');
 
     if (dir === 'prev') {
+        handleMove(1, games, size);
 
-        var selectedOrder = $('.selected').css('order');
-        var selectedID;
-        $(select).each(function () {
-            selectedID = this.id;
-        });
-        $('.selected').css('order', parseInt(selectedOrder) + 1);
-        $('.selected').removeClass('selected');
-
-
-        $(slides).each(function () {
-            var order = $(this).css('order');
-            console.log(order);
-            if (order < size) {
-                $(this).css('order', parseInt(order) + 1);
-
-                if ($(this).css('order') == selectedOrder) {
-                    $(this).removeClass('slide');
-                    $(this).addClass('selected');
-                    selectedGameItem = getSelectedAttributes(this.id, games);
-                }
-            }
-            else {
-                $(this).css('order', 0);
-            }
-        });
-
-        $('#' + selectedID).addClass('slide');
-        //console.log(selectedGameItem.headline);
-
-        $("#gHeadline").remove();
-        $("#gDescription").remove();
-        $(".headline").append(selectedGameItem.headline)
-        $(".carousel-div").append(selectedGameItem.description);
-
-        carouselAnimating = false;
-
-    }else{
-        var selectedOrder = $('.selected').css('order');
-        var selectedID;
-        $(select).each(function() {
-            selectedID = this.id;
-        });
-        $('.selected').css('order',parseInt(selectedOrder)-1);
-        $('.selected').removeClass('selected');
-
-
-
-        $(slides).each(function(){
-            var order = $(this).css('order');
-            console.log(order);
-            if (order > 0) {
-                $(this).css('order', parseInt(order) - 1);
-
-                if ($(this).css('order') == selectedOrder) {
-                    $(this).removeClass('slide');
-                    $(this).addClass('selected');
-                    selectedGameItem = getSelectedAttributes(this.id, games);
-                }
-            }
-            else {
-                $(this).css('order', size);
-            }
-        });
-
-        $('#'+selectedID).addClass('slide');
-        //console.log(selectedGameItem.headline);
-
-        $("#gHeadline").remove();
-        $("#gDescription").remove();
-        $(".headline").append(selectedGameItem.headline)
-        $(".carousel-div").append(selectedGameItem.description);
-
-        carouselAnimating = false;
-
+    } else {
+        handleMove(0, games, size);
     }
+}
+
+function handleMove(dir, games, size){
+    var slides = $('.slide');
+    var select = $('.selected');
+    var selectedGameItem;
+    var selectedOrder = $('.selected').css('order');
+    var selectedID;
+
+    $(select).each(function () {
+        selectedID = this.id;
+    });
+    $('.selected').css('order',dir > 0 ? parseInt(selectedOrder) + 1 : parseInt(selectedOrder)-1);
+    $('.selected').removeClass('selected');
+
+    $(slides).each(function () {
+        var order = $(this).css('order');
+
+        if (dir > 0 ? order < size : order > 0) {
+            console.log("you pressed the right key");
+            $(this).css('order', dir > 0 ? parseInt(order) + 1 : parseInt(order)-1);
+            if ($(this).css('order') == selectedOrder) {
+                $(this).removeClass('slide');
+                $(this).addClass('selected');
+                selectedGameItem = getSelectedAttributes(this.id, games);
+            }
+        }
+        else {
+            dir > 0 ? $(this).css('order', 0) : $(this).css('order', size);
+        }
+    });
+
+
+
+    $('#' + selectedID).addClass('slide');
+
+    $("#gHeadline").remove();
+    $("#gDescription").remove();
+    $(".headline").append(selectedGameItem.headline)
+    $(".carousel-div").append(selectedGameItem.description);
+
+
+
 }
 
 function drawError(code){
