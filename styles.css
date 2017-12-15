@@ -1,0 +1,79 @@
+
+html {
+    font-family: 'helvetica neue', helvetica, arial, sans-serif;
+}
+
+
+body {
+    font-family: sans-serif;
+    line-height: 1.4;
+    margin: 0;
+    background-image: url("http://mlb.mlb.com/mlb/images/devices/ballpark/1920x1080/1.jpg");
+}
+
+
+.mainHeader{
+    color:white;
+    text-align: center;
+}
+.headline{
+    color:whitesmoke;
+    width:24%;
+    margin-left: 13%;
+    margin-top:7%;
+    text-align: center;
+
+}
+.setBreak{
+    width: 100%;
+    margin-top:2%;
+}
+
+.carousel-wrapper {
+    display:flex;
+    justify-content: flex-start;
+    overflow:hidden;
+}
+
+.carousel {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    overflow:hidden;
+}
+
+
+.slide {
+    width: 124px;
+    height: 70px;
+    background: #437313;
+    margin-right: 5px;
+}
+.selected{
+    border: 1px solid #fff;
+    width: 260px;
+    height: 120px;
+    margin-right: 5px;
+
+    background-repeat: no-repeat;
+    background-size: 98% 96%;
+    background-position: center;
+
+}
+.carousel-div {
+    margin: 0 auto 16px;
+    width: 100%;
+}
+
+.carousel-div p{
+    font-family: "Times New Roman";
+    color: whitesmoke;
+    margin-left: 20%;
+}
+
+
+p {
+    margin: 18px auto;
+    width: 50vw;
+}
