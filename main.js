@@ -1,6 +1,6 @@
 // Author: Jordan Bergero
 
-var requestURL = 'http://gdx.mlb.com/components/game/mlb/year_2017/month_10/day_05/master_scoreboard.json';
+var requestURL = 'http://gdx.mlb.com/components/game/mlb/year_2017/month_10/day_26/master_scoreboard.json';
 var globalJSON;
 $(document).ready(function() {
     $.getJSON(requestURL, function (data) {
@@ -22,10 +22,7 @@ $(document).ready(function() {
             direction = "prev";
             moveSlides(direction, globalJSON);
         }
-
     });
-
-
 });
 
 function populateHeader(gameObject){
@@ -34,6 +31,12 @@ function populateHeader(gameObject){
     var year = gameObject.data.games.year;
     var pageHeader = $("<h1> Games for: " + month +"/"+day+"/"+year+"</h1>");
     $(".mainHeader").append(pageHeader);
+
+    if(gameObject.data.games.game == undefined){
+        var pageHeader = $("<h2>There are no baseball games today.</h2>");
+        $(".mainHeader").append(pageHeader);
+
+    }
 }
 
 function listGames(gameObject) {
@@ -177,7 +180,7 @@ function handleMove(dir, games, size){
             }
         }
         else {
-            // Let me know if you heard this one already ^
+            // Let me know if you've heard this one already ^
             dir > 0 ? $(this).css('order', 0) : $(this).css('order', size);
         }
     });
