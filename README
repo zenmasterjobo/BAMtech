@@ -1,0 +1,17 @@
+Author: Jordan Bergero
+
+What:
+Programming exercise for bamtech. 
+This program pulls data from mlb, and displays it in a media list
+
+Execution:
+After cloning the repository, run 'node loadServer.js' in the main directory.
+
+Changing Results:
+In the 'main.js' file, change the numbers of the month, day, and year in the 'request URl' 
+variable, to see different results.
+
+
+known bugs:
+On days with two game results, the infinite looping functionality of the list will not work.
+

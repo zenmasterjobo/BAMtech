@@ -1,6 +1,6 @@
 // Author: Jordan Bergero
 
-var requestURL = 'http://gdx.mlb.com/components/game/mlb/year_2017/month_10/day_26/master_scoreboard.json';
+var requestURL = 'http://gdx.mlb.com/components/game/mlb/year_2016/month_05/day_22/master_scoreboard.json';
 var globalJSON;
 $(document).ready(function() {
     $.getJSON(requestURL, function (data) {
