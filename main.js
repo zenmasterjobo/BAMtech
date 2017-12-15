@@ -1,6 +1,6 @@
 // Author: Jordan Bergero
 
-var requestURL = 'http://gdx.mlb.com/components/game/mlb/year_2016/month_05/day_20/master_scoreboard.json';
+var requestURL = 'http://gdx.mlb.com/components/game/mlb/year_2016/month_07/day_21/master_scoreboard.json';
 var globalJSON;
 $(document).ready(function() {
     $.getJSON(requestURL, function (data) {
@@ -30,38 +30,49 @@ $(document).ready(function() {
 
 
 function populateHeader(gameObject){
-    //TODO: Print the Date
-    var pageHeader = $("<h1> Today's Games</h1>");
+    var day = gameObject.data.games.day;
+    var month = gameObject.data.games.month;
+    var year = gameObject.data.games.year;
+    var pageHeader = $("<h1> Games for: " + month +"/"+day+"/"+year+"</h1>");
     $(".mainHeader").append(pageHeader);
+
 
 }
 
 function listGames(gameObject) {
     var games = gameObject.data.games.game;
+    var year  = gameObject.data.games.year;
     var size = games.length;
-    var halfSize = Math.floor(size/2);
-    for (var i = 0; i < size; i++) {
+    alert(size);
+    if (size > 1) {
+        var halfSize = Math.floor(size / 2);
+        for (var i = 0; i < size; i++) {
 
-        if(i === Math.floor((size/2)/2)){
-            var selectedGameItem = getSelectedAttributes(i,games);
-            var gameElement = $("<div/>", {"class":"selected","id":i});
+            if (i === Math.floor(halfSize / 2)) {
+                var selectedGameItem = getSelectedAttributes(i, games);
+                var gameElement = $("<div/>", {"class": "selected", "id": i});
 
-        }else{
-            var gameElement = $("<div/>", {"class":"slide","id":i});
+            } else {
+                var gameElement = $("<div/>", {"class": "slide", "id": i});
+            }
+
+            $(".carousel").append(gameElement);
+            try {
+                $("#headline").append(selectedGameItem.headline);
+                $(".carousel-div").append(selectedGameItem.description);
+            } catch (e) {
+
+            }
+            setBackgroundAndOrder(i, games, year);
+
         }
+    }
 
-        $(".carousel").append(gameElement);
-        try {
-            $("#headline").append(selectedGameItem.headline);
-            $(".carousel-div").append(selectedGameItem.description);
-        }catch(e){
+    else {
+        alert("It's a world Series Game Day");
 
-        }
-        setBackgroundAndOrder(i, games);
-
-   }
+    }
 }
-
 function getSelectedAttributes(i, games){
     try {
         var gameTitle = games[i].game_media.media[0].title + ': ' + games[i].game_media.media[1].headline;
@@ -87,16 +98,27 @@ function getSelectedAttributes(i, games){
 
 }
 
-function setBackgroundAndOrder(i,games){
-    try {
-        //TODO find out if there is a way to set both attributes in one line
-        $("#" + i).css('background-image', 'url(' + games[i].video_thumbnails.thumbnail[0].content + ')');
-        $("#" + i).css('order', i);
+function setBackgroundAndOrder(i,games, year){
+    if(year != 2017) {
+        try {
+            $("#" + i).css({
+                'background-image': 'url(' + games[i].video_thumbnails.thumbnail[0].content + ')',
+                'order': i
+            });
 
-    }catch(e){
-        // TODO: Come up with better image solution if image is missing.
-        $("#" + i).css('background-image', 'url(http://placehold.it/400x600)');
-        $("#" + i).css('order', i);
+        } catch (e) {
+            $("#" + i).css({
+                'background-image': 'url(http://placehold.it/400x600)',
+                'order': i
+            });
+            //$("#" + i).css('order', i);
+        }
+    }
+    else{
+        $("#" + i).css({
+            'background-image': 'url(http://placehold.it/400x600)',
+            'order': i
+        });
     }
 }
 
@@ -125,6 +147,9 @@ function handleMove(dir, games, size){
     $(select).each(function () {
         selectedID = this.id;
     });
+
+    // If the direction is greater than 0, then we need to move to previous, which is done by increasing the order
+    // otherwise we are moving to the next game title, done by decreasing the order;
     $('.selected').css('order',dir > 0 ? parseInt(selectedOrder) + 1 : parseInt(selectedOrder)-1);
     $('.selected').removeClass('selected');
 
@@ -132,7 +157,8 @@ function handleMove(dir, games, size){
         var order = $(this).css('order');
 
         if (dir > 0 ? order < size : order > 0) {
-            console.log("you pressed the right key");
+            // Same rules as above, if direction is greater than 0 we are doing previous conditions
+            // otherwise we are doing next conditions
             $(this).css('order', dir > 0 ? parseInt(order) + 1 : parseInt(order)-1);
             if ($(this).css('order') == selectedOrder) {
                 $(this).removeClass('slide');
@@ -141,6 +167,7 @@ function handleMove(dir, games, size){
             }
         }
         else {
+            // Let me know if you heard this one already ^
             dir > 0 ? $(this).css('order', 0) : $(this).css('order', size);
         }
     });
@@ -148,7 +175,6 @@ function handleMove(dir, games, size){
 
 
     $('#' + selectedID).addClass('slide');
-
     $("#gHeadline").remove();
     $("#gDescription").remove();
     $(".headline").append(selectedGameItem.headline)
