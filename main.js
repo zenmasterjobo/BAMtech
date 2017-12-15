@@ -76,7 +76,8 @@ function listGames(gameObject) {
                 $("#headline").append(selectedGameItem.headline);
                 $(".carousel-div").append(selectedGameItem.description);
             } catch (e) {
-
+                // Dont do anything, becasue the slide class does not need
+                // to append any headline, or carousel-div data
             }
             setBackgroundAndOrder(i, games, year);
 
