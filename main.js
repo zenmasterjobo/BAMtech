@@ -1,6 +1,6 @@
 // Author: Jordan Bergero
 
-var requestURL = 'http://gdx.mlb.com/components/game/mlb/year_2016/month_07/day_21/master_scoreboard.json';
+var requestURL = 'http://gdx.mlb.com/components/game/mlb/year_2017/month_10/day_25/master_scoreboard.json';
 var globalJSON;
 $(document).ready(function() {
     $.getJSON(requestURL, function (data) {
@@ -43,8 +43,23 @@ function listGames(gameObject) {
     var games = gameObject.data.games.game;
     var year  = gameObject.data.games.year;
     var size = games.length;
-    alert(size);
-    if (size > 1) {
+
+    // In the case of a world Series Game
+    if (size === undefined) {
+        var garray =[];
+        garray.push(games);
+        var selectedGameItem = getSelectedAttributes(0, garray);
+        var gameElement = $("<div/>", {"class": "selected", "id": 0});
+        $(".carousel").append(gameElement);
+        try {
+            $("#headline").append(selectedGameItem.headline);
+            $(".carousel-div").append(selectedGameItem.description);
+        } catch (e) {
+
+        }
+        setBackgroundAndOrder(0, games, year);
+      }
+      else {
         var halfSize = Math.floor(size / 2);
         for (var i = 0; i < size; i++) {
 
@@ -66,11 +81,6 @@ function listGames(gameObject) {
             setBackgroundAndOrder(i, games, year);
 
         }
-    }
-
-    else {
-        alert("It's a world Series Game Day");
-
     }
 }
 function getSelectedAttributes(i, games){
