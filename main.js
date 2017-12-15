@@ -1,6 +1,6 @@
 // Author: Jordan Bergero
 
-var requestURL = 'http://gdx.mlb.com/components/game/mlb/year_2017/month_10/day_25/master_scoreboard.json';
+var requestURL = 'http://gdx.mlb.com/components/game/mlb/year_2017/month_10/day_05/master_scoreboard.json';
 var globalJSON;
 $(document).ready(function() {
     $.getJSON(requestURL, function (data) {
@@ -12,22 +12,21 @@ $(document).ready(function() {
         drawError(err);
         });
 
-    $( "body" ).keydown(function(e) {
+    $("body").keydown(function (e) {
         var direction;
-        if(e.keyCode == "39"){
+        if (e.keyCode == "39") {
             direction = "next";
+            moveSlides(direction, globalJSON);
         }
-        else if (e.keyCode=="37") {
-            direction ="prev";
+        else if (e.keyCode == "37") {
+            direction = "prev";
+            moveSlides(direction, globalJSON);
         }
-
-        moveSlides(direction, globalJSON);
 
     });
 
+
 });
-
-
 
 function populateHeader(gameObject){
     var day = gameObject.data.games.day;
@@ -35,8 +34,6 @@ function populateHeader(gameObject){
     var year = gameObject.data.games.year;
     var pageHeader = $("<h1> Games for: " + month +"/"+day+"/"+year+"</h1>");
     $(".mainHeader").append(pageHeader);
-
-
 }
 
 function listGames(gameObject) {
@@ -83,6 +80,7 @@ function listGames(gameObject) {
         }
     }
 }
+
 function getSelectedAttributes(i, games){
     try {
         var gameTitle = games[i].game_media.media[0].title + ': ' + games[i].game_media.media[1].headline;
@@ -133,20 +131,22 @@ function setBackgroundAndOrder(i,games, year){
 }
 
 
-
-// Carousel moves all slides left or right by one slide
+// Abstracts which key you pressed and decides what params to call handleMove with
 function moveSlides(dir, gameObject) {
-    var games = gameObject.data.games.game;
-    var size = games.length - 1;
+    if (gameObject.data.games.game.length != undefined) {
+        var games = gameObject.data.games.game;
+        var size = games.length - 1;
 
-    if (dir === 'prev') {
-        handleMove(1, games, size);
+        if (dir === 'prev') {
+            handleMove(1, games, size);
 
-    } else {
-        handleMove(0, games, size);
+        } else {
+            handleMove(0, games, size);
+        }
     }
 }
 
+// This handles the actual movement functionality
 function handleMove(dir, games, size){
     var slides = $('.slide');
     var select = $('.selected');
